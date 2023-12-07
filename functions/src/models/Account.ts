@@ -6,7 +6,7 @@ export default interface Account {
   name?: string;
   displayName: string;
   email: string;
-  phoneNumber: number;
+  phoneNumber: string;
   toAddress: string;
   fromAddress: string;
   tasks: Task[];

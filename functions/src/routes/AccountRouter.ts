@@ -11,14 +11,14 @@ const errorResponse = (error: any, res: any) => {
 };
 
 // get account by id:
-accountRouter.get("/accounts/:id", async (req, res) => {
+accountRouter.get("/accounts/:uid", async (req, res) => {
   try {
-    const _id: ObjectId = new ObjectId(req.params.id);
+    const uid: string = req.params.uid;
     const client = await getClient();
     const account = await client
       .db()
       .collection<Account>("accounts")
-      .findOne({ _id });
+      .findOne({ uid });
     if (account) {
       res.status(200).json(account);
     } else {
@@ -34,7 +34,7 @@ accountRouter.post("/accounts", async (req, res) => {
   try {
     const account: Account = req.body;
     const client = await getClient();
-    await client.db().collection<Account>("account").insertOne(account);
+    await client.db().collection<Account>("accounts").insertOne(account);
     res.status(201).json(account);
   } catch (err) {
     errorResponse(err, res);
