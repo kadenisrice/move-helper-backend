@@ -7,8 +7,8 @@ export default interface Account {
   displayName: string;
   email: string;
   phoneNumber: string;
-  toAddress: string;
-  fromAddress: string;
+  toAddress: Address;
+  fromAddress: Address;
   tasks: Task[];
   orders: Order[];
   expenses: Expense[];
@@ -29,4 +29,11 @@ interface Order {
 interface Expense {
   name: string;
   price: number;
+}
+
+interface Address {
+  street: string;
+  city: string;
+  state: string;
+  zip: number;
 }
