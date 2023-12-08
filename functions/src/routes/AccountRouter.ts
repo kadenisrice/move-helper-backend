@@ -99,9 +99,31 @@ accountRouter.patch("/accounts/add-task/:uid", async (req, res) => {
       .updateOne({ uid }, { $push: { tasks: task } });
 
     if (result.modifiedCount) {
-      res.status(200).json({ message: "Task added successfully" });
+      res.status(200).json(task);
     } else {
       res.status(404).json({ message: "Account not found" });
+    }
+  } catch (err) {
+    errorResponse(err, res);
+  }
+});
+
+// remove a task from users account: (patch)
+accountRouter.patch("/accounts/delete-task/:uuid/:uid", async (req, res) => {
+  try {
+    const uuid: string = req.params.uuid;
+    const uid: string = req.params.uid;
+
+    const client = await getClient();
+    const result = await client
+      .db()
+      .collection<Account>("accounts")
+      .updateOne({ uid }, { $pull: { tasks: { uuid } } });
+
+    if (result.modifiedCount) {
+      res.sendStatus(204);
+    } else {
+      res.status(404).json({ message: "Error deleting task" });
     }
   } catch (err) {
     errorResponse(err, res);

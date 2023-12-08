@@ -15,6 +15,7 @@ export default interface Account {
 }
 
 export interface Task {
+  uuid: string;
   name: string;
   content: string;
   deadline: string;
