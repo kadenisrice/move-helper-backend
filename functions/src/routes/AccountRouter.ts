@@ -1,7 +1,7 @@
 import express from "express";
 import { ObjectId } from "mongodb";
 import { getClient } from "../db";
-import Account from "../models/Account";
+import Account, { Task } from "../models/Account";
 
 const accountRouter = express.Router();
 
@@ -76,6 +76,32 @@ accountRouter.put("/accounts/:id", async (req, res) => {
       res.status(200).json(updatedAccount);
     } else {
       res.status(404).json({ message: "Not Found" });
+    }
+  } catch (err) {
+    errorResponse(err, res);
+  }
+});
+
+// update users task list: (patch)
+accountRouter.patch("/accounts/add-task/:uid", async (req, res) => {
+  try {
+    const uid: string = req.params.uid;
+    const task: Task = req.body;
+
+    if (!task.name || !task.content || !task.deadline) {
+      res.status(400).json({ message: "Incomplete task details" });
+    }
+
+    const client = await getClient();
+    const result = await client
+      .db()
+      .collection<Account>("accounts")
+      .updateOne({ uid }, { $push: { tasks: task } });
+
+    if (result.modifiedCount) {
+      res.status(200).json({ message: "Task added successfully" });
+    } else {
+      res.status(404).json({ message: "Account not found" });
     }
   } catch (err) {
     errorResponse(err, res);
