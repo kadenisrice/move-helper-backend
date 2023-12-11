@@ -130,6 +130,7 @@ accountRouter.patch("/accounts/delete-task/:uuid/:uid", async (req, res) => {
   }
 });
 
+// updating specific box quantity: (patch)
 accountRouter.patch("/accounts/update-box-quantity/:uuid", async (req, res) => {
   try {
     const uuid: string = req.params.uuid;
@@ -148,6 +149,28 @@ accountRouter.patch("/accounts/update-box-quantity/:uuid", async (req, res) => {
       res.status(200).json({ message: "Quantity has been updated!!" });
     } else {
       res.status(404).json({ message: "Error deleting task" });
+    }
+  } catch (err) {
+    errorResponse(err, res);
+  }
+});
+
+// delete box from users account: (patch)
+accountRouter.patch("/accounts/delete-box/:uuid/:uid", async (req, res) => {
+  try {
+    const uuid: string = req.params.uuid;
+    const uid: string = req.params.uid;
+
+    const client = await getClient();
+    const result = await client
+      .db()
+      .collection<Account>("accounts")
+      .updateOne({ uid }, { $pull: { boxes: { uuid } } });
+
+    if (result.modifiedCount) {
+      res.sendStatus(204);
+    } else {
+      res.status(404).json({ message: "Error deleting box" });
     }
   } catch (err) {
     errorResponse(err, res);
