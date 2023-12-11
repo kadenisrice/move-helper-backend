@@ -12,6 +12,18 @@ export default interface Account {
   tasks: Task[];
   orders: Order[];
   expenses: Expense[];
+  boxes: Box[];
+}
+
+interface Box {
+  uuid: string;
+  length: string;
+  width: string;
+  height: string;
+  distance_unit: string;
+  weight: string;
+  mass_unit: string;
+  quantity: number;
 }
 
 export interface Task {

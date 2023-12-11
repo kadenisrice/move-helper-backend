@@ -130,4 +130,28 @@ accountRouter.patch("/accounts/delete-task/:uuid/:uid", async (req, res) => {
   }
 });
 
+accountRouter.patch("/accounts/update-box-quantity/:uuid", async (req, res) => {
+  try {
+    const uuid: string = req.params.uuid;
+    const newQuantity: number = req.body.quantity;
+
+    const client = await getClient();
+    const result = await client
+      .db()
+      .collection<Account>("accounts")
+      .updateOne(
+        { "boxes.uuid": uuid },
+        { $inc: { "boxes.$.quantity": newQuantity } }
+      );
+
+    if (result.modifiedCount) {
+      res.status(200).json({ message: "Quantity has been updated!!" });
+    } else {
+      res.status(404).json({ message: "Error deleting task" });
+    }
+  } catch (err) {
+    errorResponse(err, res);
+  }
+});
+
 export default accountRouter;
