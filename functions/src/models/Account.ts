@@ -7,6 +7,7 @@ export default interface Account {
   displayName: string;
   email: string;
   phoneNumber: string;
+  photoURL?: string;
   toAddress: Address;
   fromAddress: Address;
   tasks: Task[];
