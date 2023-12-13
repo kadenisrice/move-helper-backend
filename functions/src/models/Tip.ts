@@ -6,4 +6,5 @@ export default interface Tip {
   from: string;
   text: string;
   photoURL?: string;
+  date: Date;
 }
