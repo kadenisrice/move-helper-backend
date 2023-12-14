@@ -27,6 +27,22 @@ tipsRouter.get("/community/tips", async (req, res) => {
   }
 });
 
+// get tip by id:
+tipsRouter.get("/community/tips/:uuid", async (req, res) => {
+  try {
+    const uuid: string = req.params.uuid;
+    const client = await getClient();
+    const tip = await client.db().collection<Tip>("tips").findOne({ uuid });
+    if (tip) {
+      res.status(200).json(tip);
+    } else {
+      res.status(404).json({ message: "Tip Does Not Exist" });
+    }
+  } catch (err) {
+    errorResponse(err, res);
+  }
+});
+
 // Make a new tip:
 tipsRouter.post("/community/tips", async (req, res) => {
   console.log("anoything");
@@ -64,7 +80,7 @@ tipsRouter.delete("/community/tips/:uuid", async (req, res) => {
   }
 });
 
-// replace / update Shoutout by ID
+// replace / update tip by ID
 tipsRouter.put("/community/tips/:uuid", async (req, res) => {
   try {
     const uuid = req.params.uuid;

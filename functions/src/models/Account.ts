@@ -1,4 +1,5 @@
 import { ObjectId } from "mongodb";
+import BoxSet from "./BoxSet";
 
 export default interface Account {
   _id?: ObjectId;
@@ -14,9 +15,10 @@ export default interface Account {
   orders: Order[];
   expenses: Expense[];
   boxes: Box[];
+  boxSet: BoxSet[];
 }
 
-interface Box {
+export interface Box {
   uuid: string;
   length: string;
   width: string;
