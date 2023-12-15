@@ -13,28 +13,22 @@ const errorResponse = (error: any, res: any) => {
 
 // Get all tips: (can add query string parameters here)
 tipsRouter.get("/community/tips", async (req, res) => {
-  const mostLiked: string = req.query["most-liked"] as string;
-  const queryObj: any = {};
-  if (mostLiked) {
-    queryObj.stars = { $sort: { stars: -1 } };
-  }
+  const sortValue = req.query["sort-value"] as string;
+
   try {
     const client = await getClient();
+    let query = client.db().collection<Tip>("tips").find();
 
-    // mongo command to get all tips:
-    if (mostLiked) {
-      let getAllTips = client
-        .db()
-        .collection<Tip>("tips")
-        .find()
-        .sort({ stars: -1 });
-      const results = await getAllTips.toArray();
-      res.status(200).json(results);
-    } else {
-      let getAllTips = client.db().collection<Tip>("tips").find();
-      const results = await getAllTips.toArray();
-      res.status(200).json(results);
+    if (sortValue === "mostLiked") {
+      query = query.sort({ stars: -1 });
+    } else if (sortValue === "asc") {
+      query = query.sort({ date: 1 });
+    } else if (sortValue === "desc") {
+      query = query.sort({ date: -1 });
     }
+
+    const results = await query.toArray();
+    res.status(200).json(results);
   } catch (err) {
     errorResponse(err, res);
   }
