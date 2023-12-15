@@ -34,6 +34,7 @@ export interface Task {
   name: string;
   content: string;
   deadline: string;
+  completed: boolean;
 }
 
 interface Order {

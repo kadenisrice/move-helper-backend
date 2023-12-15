@@ -4,6 +4,7 @@ export default interface Tip {
   _id?: ObjectId;
   uuid: string;
   from: string;
+  from_id: ObjectId;
   text: string;
   photoURL?: string;
   date: Date;

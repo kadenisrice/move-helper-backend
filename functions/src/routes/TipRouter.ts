@@ -13,15 +13,28 @@ const errorResponse = (error: any, res: any) => {
 
 // Get all tips: (can add query string parameters here)
 tipsRouter.get("/community/tips", async (req, res) => {
+  const mostLiked: string = req.query["most-liked"] as string;
+  const queryObj: any = {};
+  if (mostLiked) {
+    queryObj.stars = { $sort: { stars: -1 } };
+  }
   try {
     const client = await getClient();
 
-    // mongo command to get all shoutouts:
-    const getsAllTips = client.db().collection<Tip>("tips").find();
-
-    // displays all shoutouts:
-    const results = await getsAllTips.toArray();
-    res.status(200).json(results);
+    // mongo command to get all tips:
+    if (mostLiked) {
+      let getAllTips = client
+        .db()
+        .collection<Tip>("tips")
+        .find()
+        .sort({ stars: -1 });
+      const results = await getAllTips.toArray();
+      res.status(200).json(results);
+    } else {
+      let getAllTips = client.db().collection<Tip>("tips").find();
+      const results = await getAllTips.toArray();
+      res.status(200).json(results);
+    }
   } catch (err) {
     errorResponse(err, res);
   }
