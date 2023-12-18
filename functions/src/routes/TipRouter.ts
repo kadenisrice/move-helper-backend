@@ -40,7 +40,7 @@ tipsRouter.get("/community/tips", async (req, res) => {
           { $sort: { length: -1 } },
         ])
         .toArray();
-      res.status(200).json(results);
+      return res.status(200).json(results);
     } else if (sortValue === "asc") {
       query = query.sort({ date: 1 });
     } else if (sortValue === "desc") {
