@@ -20,7 +20,27 @@ tipsRouter.get("/community/tips", async (req, res) => {
     let query = client.db().collection<Tip>("tips").find();
 
     if (sortValue === "mostLiked") {
-      query = query.sort({ stars: -1 });
+      const results = await client
+        .db()
+        .collection<Tip>("tips")
+        .aggregate([
+          {
+            $project: {
+              length: { $size: { $ifNull: ["$stars", []] } },
+              uuid: true,
+              from: true,
+              fromNickname: true,
+              from_id: true,
+              text: true,
+              photoURL: true,
+              date: true,
+              stars: true,
+            },
+          },
+          { $sort: { length: -1 } },
+        ])
+        .toArray();
+      res.status(200).json(results);
     } else if (sortValue === "asc") {
       query = query.sort({ date: 1 });
     } else if (sortValue === "desc") {
